@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,57 +18,278 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            gap: 20px;
         }
 
+        /* ---- Panel lateral ---- */
+        .panel {
+            background-color: #16213e;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            border: 1px solid #2a3a5c;
+        }
+
+        .panel h2 {
+            color: #e2e8f0;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a3a5c;
+        }
+
+        .panel label {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .input-grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .panel input[type="text"] {
+            background-color: #0f3460;
+            border: 1px solid #2a3a5c;
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #e2e8f0;
+            font-size: 15px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .panel input[type="text"]:focus {
+            border-color: #2563eb;
+        }
+
+        .btn-graficar {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-graficar:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-graficar:active {
+            transform: scale(0.97);
+        }
+
+        .controles-zoom {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-zoom {
+            flex: 1;
+            background-color: #0f3460;
+            color: #e2e8f0;
+            border: 1px solid #2a3a5c;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-zoom:hover {
+            background-color: #1a4a7a;
+        }
+
+        .btn-zoom:active {
+            transform: scale(0.95);
+        }
+
+        .btn-reset {
+            background-color: transparent;
+            color: #94a3b8;
+            border: 1px solid #2a3a5c;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #2a3a5c;
+            color: #e2e8f0;
+        }
+
+        .funciones-rapidas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .btn-rapido {
+            background-color: #0f3460;
+            color: #94a3b8;
+            border: 1px solid #2a3a5c;
+            border-radius: 6px;
+            padding: 8px 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Consolas', monospace;
+        }
+
+        .btn-rapido:hover {
+            background-color: #1a4a7a;
+            color: #e2e8f0;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 12px;
+            min-height: 16px;
+            text-align: center;
+        }
+
+        /* ---- Canvas ---- */
         .canvas-container {
             background-color: #fafbfc;
             border-radius: 12px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
             padding: 20px;
             border: 1px solid #d1d5db;
+            position: relative;
         }
 
         canvas {
             display: block;
             border-radius: 6px;
+            cursor: grab;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        .info-escala {
+            position: absolute;
+            bottom: 28px;
+            right: 28px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
         }
     </style>
 </head>
-
 <body>
 
+    <!-- Panel lateral -->
+    <div class="panel">
+        <h2>Graficador 2D</h2>
+
+        <div class="input-grupo">
+            <label>Función f(x):</label>
+            <input type="text" id="inputFuncion" value="sin(x)" placeholder="ej: sin(x), x^2, cos(x)">
+        </div>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <button class="btn-graficar" onclick="graficarDesdeInput()">Graficar</button>
+
+        <div class="input-grupo">
+            <label>Funciones rápidas:</label>
+            <div class="funciones-rapidas">
+                <button class="btn-rapido" onclick="insertarFuncion('sin(x)')">sin</button>
+                <button class="btn-rapido" onclick="insertarFuncion('cos(x)')">cos</button>
+                <button class="btn-rapido" onclick="insertarFuncion('tan(x)')">tan</button>
+                <button class="btn-rapido" onclick="insertarFuncion('x^2')">x²</button>
+                <button class="btn-rapido" onclick="insertarFuncion('x^3')">x³</button>
+                <button class="btn-rapido" onclick="insertarFuncion('sqrt(x)')">√x</button>
+                <button class="btn-rapido" onclick="insertarFuncion('abs(x)')">|x|</button>
+                <button class="btn-rapido" onclick="insertarFuncion('log(x)')">log</button>
+                <button class="btn-rapido" onclick="insertarFuncion('1/x')">1/x</button>
+            </div>
+        </div>
+
+        <div class="input-grupo">
+            <label>Zoom:</label>
+            <div class="controles-zoom">
+                <button class="btn-zoom" onclick="zoom(1.3)">+</button>
+                <button class="btn-zoom" onclick="zoom(0.7)">−</button>
+            </div>
+        </div>
+
+        <button class="btn-reset" onclick="resetearVista()">Restablecer vista</button>
+    </div>
+
+    <!-- Canvas -->
     <div class="canvas-container">
         <canvas id="graficador" width="700" height="500"></canvas>
+        <div class="info-escala" id="infoEscala">Escala: 50 px/u</div>
     </div>
 
     <script>
         const canvas = document.getElementById("graficador");
         const ctx = canvas.getContext("2d");
+        const inputFuncion = document.getElementById("inputFuncion");
+        const errorMsg = document.getElementById("errorMsg");
+        const infoEscala = document.getElementById("infoEscala");
 
         const ancho = canvas.width;
         const alto = canvas.height;
 
+        // Estado del graficador
+        let escala = 50;
+        let desplazamientoX = 0;
+        let desplazamientoY = 0;
+        let funcionActual = Math.sin;
+        let expresionActual = "sin(x)";
 
-        const origenX = ancho / 2;
-        const origenY = alto / 2;
+        // Estado del arrastre (pan)
+        let arrastrando = false;
+        let arrasInicioX = 0;
+        let arrasInicioY = 0;
 
+        // Obtener el origen (centro + desplazamiento)
+        function getOrigenX() { return ancho / 2 + desplazamientoX; }
+        function getOrigenY() { return alto / 2 + desplazamientoY; }
 
-        const escala = 50;
-
-
+        // ---------------------
+        // 1. Dibujar la cuadrícula
+        // ---------------------
         function dibujarCuadricula() {
             ctx.strokeStyle = "#e5e7eb";
             ctx.lineWidth = 0.5;
 
-            for (let px = origenX % escala; px < ancho; px += escala) {
+            let ox = getOrigenX();
+            let oy = getOrigenY();
+
+            // Líneas verticales
+            let inicioX = ox % escala;
+            for (let px = inicioX; px < ancho; px += escala) {
                 ctx.beginPath();
                 ctx.moveTo(px, 0);
                 ctx.lineTo(px, alto);
                 ctx.stroke();
             }
 
-
-            for (let py = origenY % escala; py < alto; py += escala) {
+            // Líneas horizontales
+            let inicioY = oy % escala;
+            for (let py = inicioY; py < alto; py += escala) {
                 ctx.beginPath();
                 ctx.moveTo(0, py);
                 ctx.lineTo(ancho, py);
@@ -77,79 +297,99 @@
             }
         }
 
-
+        // ---------------------
+        // 2. Dibujar los ejes X e Y
+        // ---------------------
         function dibujarEjes() {
+            let ox = getOrigenX();
+            let oy = getOrigenY();
+
             ctx.strokeStyle = "#374151";
             ctx.lineWidth = 1.5;
 
+            // Eje X
+            if (oy >= 0 && oy <= alto) {
+                ctx.beginPath();
+                ctx.moveTo(0, oy);
+                ctx.lineTo(ancho, oy);
+                ctx.stroke();
+            }
 
-            ctx.beginPath();
-            ctx.moveTo(0, origenY);
-            ctx.lineTo(ancho, origenY);
-            ctx.stroke();
+            // Eje Y
+            if (ox >= 0 && ox <= ancho) {
+                ctx.beginPath();
+                ctx.moveTo(ox, 0);
+                ctx.lineTo(ox, alto);
+                ctx.stroke();
+            }
 
-
-            ctx.beginPath();
-            ctx.moveTo(origenX, 0);
-            ctx.lineTo(origenX, alto);
-            ctx.stroke();
-
-
+            // Marcas de escala y números
             ctx.fillStyle = "#6b7280";
             ctx.font = "11px Segoe UI, Arial, sans-serif";
+
+            // Marcas en el eje X
             ctx.textAlign = "center";
             ctx.textBaseline = "top";
 
+            let inicioUnidadX = Math.ceil(-ox / escala);
+            let finUnidadX = Math.floor((ancho - ox) / escala);
 
-            let unidadInicio = -Math.floor(origenX / escala);
-            let unidadFin = Math.floor((ancho - origenX) / escala);
-
-            for (let i = unidadInicio; i <= unidadFin; i++) {
+            for (let i = inicioUnidadX; i <= finUnidadX; i++) {
                 if (i === 0) continue;
-                let px = origenX + i * escala;
-
+                let px = ox + i * escala;
 
                 ctx.strokeStyle = "#374151";
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(px, origenY - 4);
-                ctx.lineTo(px, origenY + 4);
+                ctx.moveTo(px, oy - 4);
+                ctx.lineTo(px, oy + 4);
                 ctx.stroke();
 
-
-                ctx.fillText(i.toString(), px, origenY + 8);
+                let posY = oy + 8;
+                if (posY < 0) posY = 8;
+                if (posY > alto - 14) posY = alto - 14;
+                ctx.fillText(i.toString(), px, posY);
             }
 
+            // Marcas en el eje Y
             ctx.textAlign = "right";
             ctx.textBaseline = "middle";
 
-            unidadInicio = -Math.floor((alto - origenY) / escala);
-            unidadFin = Math.floor(origenY / escala);
+            let inicioUnidadY = Math.ceil(-(alto - oy) / escala);
+            let finUnidadY = Math.floor(oy / escala);
 
-            for (let i = unidadInicio; i <= unidadFin; i++) {
+            for (let i = inicioUnidadY; i <= finUnidadY; i++) {
                 if (i === 0) continue;
-                let py = origenY - i * escala;
-
+                let py = oy - i * escala;
 
                 ctx.strokeStyle = "#374151";
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(origenX - 4, py);
-                ctx.lineTo(origenX + 4, py);
+                ctx.moveTo(ox - 4, py);
+                ctx.lineTo(ox + 4, py);
                 ctx.stroke();
 
-
-                ctx.fillText(i.toString(), origenX - 8, py);
+                let posX = ox - 8;
+                if (posX < 20) posX = 20;
+                if (posX > ancho) posX = ancho - 4;
+                ctx.fillText(i.toString(), posX, py);
             }
 
-
-            ctx.textAlign = "right";
-            ctx.textBaseline = "top";
-            ctx.fillText("0", origenX - 6, origenY + 6);
+            // Etiqueta del origen
+            if (ox > 10 && ox < ancho - 10 && oy > 10 && oy < alto - 10) {
+                ctx.textAlign = "right";
+                ctx.textBaseline = "top";
+                ctx.fillText("0", ox - 6, oy + 6);
+            }
         }
 
-
+        // ---------------------
+        // 3. Dibujar una función
+        // ---------------------
         function dibujarFuncion(fn, color) {
+            let ox = getOrigenX();
+            let oy = getOrigenY();
+
             ctx.strokeStyle = color;
             ctx.lineWidth = 2.5;
             ctx.beginPath();
@@ -157,13 +397,19 @@
             let primerPunto = true;
 
             for (let px = 0; px < ancho; px++) {
-                let x = (px - origenX) / escala;
+                let x = (px - ox) / escala;
+                let y;
 
-                let y = fn(x);
+                try {
+                    y = fn(x);
+                } catch (e) {
+                    primerPunto = true;
+                    continue;
+                }
 
-                let py = origenY - y * escala;
+                let py = oy - y * escala;
 
-                if (py < -10 || py > alto + 10 || isNaN(y) || !isFinite(y)) {
+                if (py < -50 || py > alto + 50 || isNaN(y) || !isFinite(y)) {
                     primerPunto = true;
                     continue;
                 }
@@ -179,20 +425,135 @@
             ctx.stroke();
         }
 
+        // ---------------------
+        // Renderizar todo
+        // ---------------------
         function renderizar() {
-
             ctx.fillStyle = "#fafbfc";
             ctx.fillRect(0, 0, ancho, alto);
 
             dibujarCuadricula();
             dibujarEjes();
+            dibujarFuncion(funcionActual, "#2563eb");
 
-
-            dibujarFuncion(Math.sin, "#2563eb");
+            infoEscala.textContent = "Escala: " + Math.round(escala) + " px/u";
         }
 
+        // ---------------------
+        // Parsear expresión del usuario
+        // ---------------------
+        function parsearExpresion(expr) {
+            // Reemplazar notación amigable a JavaScript válido
+            let js = expr
+                .replace(/\^/g, '**')                 // x^2 → x**2
+                .replace(/sin/g, 'Math.sin')
+                .replace(/cos/g, 'Math.cos')
+                .replace(/tan/g, 'Math.tan')
+                .replace(/sqrt/g, 'Math.sqrt')
+                .replace(/abs/g, 'Math.abs')
+                .replace(/log/g, 'Math.log10')
+                .replace(/ln/g, 'Math.log')
+                .replace(/pi/g, 'Math.PI')
+                .replace(/e(?!x)/g, 'Math.E')         // e como constante (no en "exp")
+                // Multiplicación implícita: 2x → 2*x, 3sin → 3*Math.sin
+                .replace(/(\d)(x)/g, '$1*$2')
+                .replace(/(\d)(Math\.)/g, '$1*$2')
+                .replace(/(x)(Math\.)/g, '$1*$2')
+                .replace(/(\))(x)/g, '$1*$2')
+                .replace(/(\))(\()/g, '$1*$2')
+                .replace(/(x)(\()/g, '$1*$2');
+
+            // Crear función segura
+            return new Function('x', 'return ' + js + ';');
+        }
+
+        // ---------------------
+        // Acciones de los botones
+        // ---------------------
+        function graficarDesdeInput() {
+            let expr = inputFuncion.value.trim();
+            if (!expr) {
+                errorMsg.textContent = "Escribe una función.";
+                return;
+            }
+
+            try {
+                let fn = parsearExpresion(expr);
+                // Probar que funcione con un valor
+                let test = fn(1);
+                if (typeof test !== 'number') throw new Error("No retorna un número");
+
+                funcionActual = fn;
+                expresionActual = expr;
+                errorMsg.textContent = "";
+                renderizar();
+            } catch (e) {
+                errorMsg.textContent = "Expresión no válida. Revisa la sintaxis.";
+            }
+        }
+
+        function insertarFuncion(expr) {
+            inputFuncion.value = expr;
+            graficarDesdeInput();
+        }
+
+        function zoom(factor) {
+            escala *= factor;
+            if (escala < 5) escala = 5;
+            if (escala > 500) escala = 500;
+            renderizar();
+        }
+
+        function resetearVista() {
+            escala = 50;
+            desplazamientoX = 0;
+            desplazamientoY = 0;
+            renderizar();
+        }
+
+        // ---------------------
+        // Arrastre (Pan) con el mouse
+        // ---------------------
+        canvas.addEventListener("mousedown", (e) => {
+            arrastrando = true;
+            arrasInicioX = e.clientX;
+            arrasInicioY = e.clientY;
+        });
+
+        canvas.addEventListener("mousemove", (e) => {
+            if (!arrastrando) return;
+
+            let dx = e.clientX - arrasInicioX;
+            let dy = e.clientY - arrasInicioY;
+
+            desplazamientoX += dx;
+            desplazamientoY += dy;
+
+            arrasInicioX = e.clientX;
+            arrasInicioY = e.clientY;
+
+            renderizar();
+        });
+
+        canvas.addEventListener("mouseup", () => { arrastrando = false; });
+        canvas.addEventListener("mouseleave", () => { arrastrando = false; });
+
+        // Zoom con la rueda del mouse
+        canvas.addEventListener("wheel", (e) => {
+            e.preventDefault();
+            let factor = e.deltaY < 0 ? 1.1 : 0.9;
+            zoom(factor);
+        });
+
+        // Enter para graficar
+        inputFuncion.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") graficarDesdeInput();
+        });
+
+        // ---------------------
+        // Render inicial
+        // ---------------------
         renderizar();
     </script>
 </body>
-
 </html>
