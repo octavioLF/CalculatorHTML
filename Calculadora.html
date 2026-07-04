@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +20,7 @@
             background-color: #34495e;
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             width: 350px;
         }
 
@@ -30,7 +31,7 @@
             padding: 15px;
             margin-bottom: 15px;
             text-align: right;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .historial {
@@ -120,6 +121,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="calculadora">
@@ -129,35 +131,31 @@
         </div>
 
         <div class="botones">
-            <!-- Fila 1 -->
+
             <button class="btn-cientifico" onclick="procesarInstantaneo('sin')">sin</button>
             <button onclick="procesarNumero('7')">7</button>
             <button onclick="procesarNumero('8')">8</button>
             <button onclick="procesarNumero('9')">9</button>
             <button class="btn-operador" onclick="procesarOperador('/')">÷</button>
 
-            <!-- Fila 2 -->
             <button class="btn-cientifico" onclick="procesarInstantaneo('cos')">cos</button>
             <button onclick="procesarNumero('4')">4</button>
             <button onclick="procesarNumero('5')">5</button>
             <button onclick="procesarNumero('6')">6</button>
             <button class="btn-operador" onclick="procesarOperador('*')">×</button>
 
-            <!-- Fila 3 -->
             <button class="btn-cientifico" onclick="procesarInstantaneo('tan')">tan</button>
             <button onclick="procesarNumero('1')">1</button>
             <button onclick="procesarNumero('2')">2</button>
             <button onclick="procesarNumero('3')">3</button>
             <button class="btn-operador" onclick="procesarOperador('-')">−</button>
 
-            <!-- Fila 4 -->
             <button class="btn-cientifico" onclick="procesarInstantaneo('sqrt')">√x</button>
             <button class="btn-clear" onclick="limpiar()">C</button>
             <button onclick="procesarNumero('0')">0</button>
             <button onclick="procesarNumero('.')">.</button>
             <button class="btn-operador" onclick="procesarOperador('+')">+</button>
 
-            <!-- Fila 5 -->
             <button class="btn-cientifico" onclick="procesarInstantaneo('sqr')">x²</button>
             <button class="btn-cientifico" onclick="procesarNumero('3.14159265')">π</button>
             <button class="btn-borrar" onclick="borrarUltimo()">⌫</button>
@@ -186,13 +184,12 @@
                 } else {
                     elPantalla.innerText = numero;
                 }
-                
-                // Requisito: que el número anterior suba arriba
+
                 if (operadorPresionado) {
                     let opVisual = operadorActual;
-                    if(opVisual === '*') opVisual = '×';
-                    if(opVisual === '/') opVisual = '÷';
-                    if(opVisual === '-') opVisual = '−';
+                    if (opVisual === '*') opVisual = '×';
+                    if (opVisual === '/') opVisual = '÷';
+                    if (opVisual === '-') opVisual = '−';
                     elHistorial.innerText = formatNumero(valorAnterior) + " " + opVisual;
                     operadorPresionado = false;
                 } else {
@@ -222,7 +219,6 @@
             valorAnterior = parseFloat(elPantalla.innerText);
             operadorPresionado = true;
             inicioNuevoNumero = true;
-            // El signo NO aparece de inmediato, se guarda en memoria
         }
 
         function procesarInstantaneo(operacion) {
@@ -230,17 +226,17 @@
             let resultado = 0;
             let simbolo = "";
 
-            switch(operacion) {
+            switch (operacion) {
                 case 'sin':
-                    resultado = Math.sin(valorActual * Math.PI / 180); // Calculado en grados
+                    resultado = Math.sin(valorActual * Math.PI / 180);
                     simbolo = `sin(${valorActual})`;
                     break;
                 case 'cos':
-                    resultado = Math.cos(valorActual * Math.PI / 180); // Calculado en grados
+                    resultado = Math.cos(valorActual * Math.PI / 180);
                     simbolo = `cos(${valorActual})`;
                     break;
                 case 'tan':
-                    resultado = Math.tan(valorActual * Math.PI / 180); // Calculado en grados
+                    resultado = Math.tan(valorActual * Math.PI / 180);
                     simbolo = `tan(${valorActual})`;
                     break;
                 case 'sqrt':
@@ -276,15 +272,15 @@
             if (operadorActual !== "") {
                 let valorActual = parseFloat(elPantalla.innerText);
                 let resultado = realizarOperacion(valorAnterior, valorActual, operadorActual);
-                
+
                 let opVisual = operadorActual;
-                if(opVisual === '*') opVisual = '×';
-                if(opVisual === '/') opVisual = '÷';
-                if(opVisual === '-') opVisual = '−';
+                if (opVisual === '*') opVisual = '×';
+                if (opVisual === '/') opVisual = '÷';
+                if (opVisual === '-') opVisual = '−';
 
                 elHistorial.innerText = formatNumero(valorAnterior) + " " + opVisual + " " + formatNumero(valorActual) + " =";
                 elPantalla.innerText = formatNumero(resultado);
-                
+
                 operadorActual = "";
                 inicioNuevoNumero = true;
                 operadorPresionado = false;
@@ -311,17 +307,14 @@
         }
 
         function borrarUltimo() {
-            // Si apenas terminamos una operación o recién empezamos, no borramos caracter por caracter
-            if (inicioNuevoNumero) return; 
-            
+            if (inicioNuevoNumero) return;
+
             let textoActual = elPantalla.innerText;
             if (textoActual === "Error") {
                 limpiar();
                 return;
             }
 
-            // Si tiene más de 1 caracter, borramos el último. 
-            // Si tiene el signo de menos y un dígito (ej: -5), volver a 0
             if (textoActual.length > 1 && !(textoActual.length === 2 && textoActual.startsWith("-"))) {
                 elPantalla.innerText = textoActual.slice(0, -1);
             } else {
@@ -331,4 +324,5 @@
         }
     </script>
 </body>
+
 </html>
