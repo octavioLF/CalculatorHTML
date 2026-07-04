@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graficador de Funciones 2D</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .canvas-container {
+            background-color: #fafbfc;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+            padding: 20px;
+            border: 1px solid #d1d5db;
+        }
+
+        canvas {
+            display: block;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <canvas id="graficador" width="700" height="500"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("graficador");
+        const ctx = canvas.getContext("2d");
+
+        const ancho = canvas.width;
+        const alto = canvas.height;
+
+
+        const origenX = ancho / 2;
+        const origenY = alto / 2;
+
+
+        const escala = 50;
+
+
+        function dibujarCuadricula() {
+            ctx.strokeStyle = "#e5e7eb";
+            ctx.lineWidth = 0.5;
+
+            for (let px = origenX % escala; px < ancho; px += escala) {
+                ctx.beginPath();
+                ctx.moveTo(px, 0);
+                ctx.lineTo(px, alto);
+                ctx.stroke();
+            }
+
+
+            for (let py = origenY % escala; py < alto; py += escala) {
+                ctx.beginPath();
+                ctx.moveTo(0, py);
+                ctx.lineTo(ancho, py);
+                ctx.stroke();
+            }
+        }
+
+
+        function dibujarEjes() {
+            ctx.strokeStyle = "#374151";
+            ctx.lineWidth = 1.5;
+
+
+            ctx.beginPath();
+            ctx.moveTo(0, origenY);
+            ctx.lineTo(ancho, origenY);
+            ctx.stroke();
+
+
+            ctx.beginPath();
+            ctx.moveTo(origenX, 0);
+            ctx.lineTo(origenX, alto);
+            ctx.stroke();
+
+
+            ctx.fillStyle = "#6b7280";
+            ctx.font = "11px Segoe UI, Arial, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "top";
+
+
+            let unidadInicio = -Math.floor(origenX / escala);
+            let unidadFin = Math.floor((ancho - origenX) / escala);
+
+            for (let i = unidadInicio; i <= unidadFin; i++) {
+                if (i === 0) continue;
+                let px = origenX + i * escala;
+
+
+                ctx.strokeStyle = "#374151";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(px, origenY - 4);
+                ctx.lineTo(px, origenY + 4);
+                ctx.stroke();
+
+
+                ctx.fillText(i.toString(), px, origenY + 8);
+            }
+
+            ctx.textAlign = "right";
+            ctx.textBaseline = "middle";
+
+            unidadInicio = -Math.floor((alto - origenY) / escala);
+            unidadFin = Math.floor(origenY / escala);
+
+            for (let i = unidadInicio; i <= unidadFin; i++) {
+                if (i === 0) continue;
+                let py = origenY - i * escala;
+
+
+                ctx.strokeStyle = "#374151";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(origenX - 4, py);
+                ctx.lineTo(origenX + 4, py);
+                ctx.stroke();
+
+
+                ctx.fillText(i.toString(), origenX - 8, py);
+            }
+
+
+            ctx.textAlign = "right";
+            ctx.textBaseline = "top";
+            ctx.fillText("0", origenX - 6, origenY + 6);
+        }
+
+
+        function dibujarFuncion(fn, color) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+
+            let primerPunto = true;
+
+            for (let px = 0; px < ancho; px++) {
+                let x = (px - origenX) / escala;
+
+                let y = fn(x);
+
+                let py = origenY - y * escala;
+
+                if (py < -10 || py > alto + 10 || isNaN(y) || !isFinite(y)) {
+                    primerPunto = true;
+                    continue;
+                }
+
+                if (primerPunto) {
+                    ctx.moveTo(px, py);
+                    primerPunto = false;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+
+            ctx.stroke();
+        }
+
+        function renderizar() {
+
+            ctx.fillStyle = "#fafbfc";
+            ctx.fillRect(0, 0, ancho, alto);
+
+            dibujarCuadricula();
+            dibujarEjes();
+
+
+            dibujarFuncion(Math.sin, "#2563eb");
+        }
+
+        renderizar();
+    </script>
+</body>
+
+</html>
